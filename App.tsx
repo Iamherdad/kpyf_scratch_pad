@@ -7,6 +7,19 @@
 
 import React, {useEffect} from 'react';
 
+// const INJECTEDJAVASCRIPT = `
+//   const meta = document.createElement('meta');
+//   meta.setAttribute('content', 'initial-scale=0.5, maximum-scale=0.5, user-scalable=0');
+//   meta.setAttribute('name', 'viewport');
+//   document.getElementsByTagName('head')[0].appendChild(meta);
+// `;
+const INJECTEDJAVASCRIPT = `
+  const meta = document.createElement('meta'); 
+  meta.setAttribute('content', 'initial-scale=1, maximum-scale=0.5, user-scalable=0'); 
+  meta.setAttribute('name', 'viewport'); 
+  document.getElementsByTagName('head')[0].appendChild(meta); 
+`;
+
 import {
   StyleSheet,
   Text,
@@ -18,11 +31,6 @@ import {
 import WebView from 'react-native-webview';
 
 function App(): React.JSX.Element {
-  const handleStartClick = async () => {
-    const {Server} = NativeModules;
-    Server.createCalendarEvent((res: any) => console.log(res));
-  };
-
   useEffect(() => {
     const {Server} = NativeModules;
     Server.createCalendarEvent((res: any) => console.log(res));
@@ -30,8 +38,6 @@ function App(): React.JSX.Element {
 
   return (
     <View style={styles.container}>
-      {/* <Button title="开启linserver" onPress={() => handleStartClick()}></Button>
-      <Text>kpyf_scratch_pad</Text> */}
       <WebView
         source={{
           uri: `${
@@ -39,7 +45,16 @@ function App(): React.JSX.Element {
           }Web.bundle/index.html`,
           originWhitelist: ['*'],
         }}
+        javaScriptEnabled={true}
+        scalesPageToFit={false}
+        injectedJavaScript={INJECTEDJAVASCRIPT}
       />
+      {/* <WebView
+        source={{
+          uri: `http://8.137.17.205/`,
+          originWhitelist: ['*'],
+        }}
+      /> */}
     </View>
   );
 }
