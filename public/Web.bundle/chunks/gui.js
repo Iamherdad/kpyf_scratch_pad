@@ -141,16 +141,23 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
 
 
 var onClickLogo = function onClickLogo() {
-  window.location = 'https://scratch.mit.edu';
+  if (window.ReactNativeWebView) {
+    window.ReactNativeWebView.postMessage(JSON.stringify({
+      type: "VERSION",
+      data: "show"
+    }));
+  } else {
+    window.location = "https://scratch.mit.edu";
+  }
 };
 var handleTelemetryModalCancel = function handleTelemetryModalCancel() {
-  Object(_lib_log_js__WEBPACK_IMPORTED_MODULE_6__["default"])('User canceled telemetry modal');
+  Object(_lib_log_js__WEBPACK_IMPORTED_MODULE_6__["default"])("User canceled telemetry modal");
 };
 var handleTelemetryModalOptIn = function handleTelemetryModalOptIn() {
-  Object(_lib_log_js__WEBPACK_IMPORTED_MODULE_6__["default"])('User opted into telemetry');
+  Object(_lib_log_js__WEBPACK_IMPORTED_MODULE_6__["default"])("User opted into telemetry");
 };
 var handleTelemetryModalOptOut = function handleTelemetryModalOptOut() {
-  Object(_lib_log_js__WEBPACK_IMPORTED_MODULE_6__["default"])('User opted out of telemetry');
+  Object(_lib_log_js__WEBPACK_IMPORTED_MODULE_6__["default"])("User opted out of telemetry");
 };
 
 /*

@@ -5,17 +5,17 @@
  * @format
  */
 
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 // const INJECTEDJAVASCRIPT = `
 //   const meta = document.createElement('meta');
-//   meta.setAttribute('content', 'initial-scale=0.5, maximum-scale=0.5, user-scalable=0');
+//   meta.setAttribute('content', 'initial-scale=1, maximum-scale=0.5, user-scalable=0');
 //   meta.setAttribute('name', 'viewport');
 //   document.getElementsByTagName('head')[0].appendChild(meta);
 // `;
 const INJECTEDJAVASCRIPT = `
   const meta = document.createElement('meta'); 
-  meta.setAttribute('content', 'initial-scale=1, maximum-scale=0.5, user-scalable=0'); 
+  meta.setAttribute('content', 'initial-scale=1, maximum-scale=0.8, user-scalable=0'); 
   meta.setAttribute('name', 'viewport'); 
   document.getElementsByTagName('head')[0].appendChild(meta); 
 `;
@@ -31,11 +31,15 @@ import {
   PermissionsAndroid,
 } from 'react-native';
 import WebView, {WebViewMessageEvent} from 'react-native-webview';
-import RNFS from 'react-native-fs'; // 假设您已经安装了react-native-fs
+import RNFS from 'react-native-fs';
+import Loading from './components/Loading';
+import Version from './components/Version';
 function App(): React.JSX.Element {
+  const wasLoaded = useRef(false);
+  const [versionIsShow, setVersionIsShow] = useState(false);
   useEffect(() => {
     const {Server} = NativeModules;
-    Server.createCalendarEvent((res: any) => console.log(res));
+    Server.createCalendarEvent((res: any) => console.log(res, 'res'));
   });
 
   const requestStoragePermission = async () => {
@@ -92,14 +96,61 @@ function App(): React.JSX.Element {
   const onMessage = (event: WebViewMessageEvent) => {
     const {data} = event.nativeEvent;
     const message = JSON.parse(data);
-    if (message.type === 'DOWNLOAD') {
-      const {filename, data: base64Data} = message;
-      handleDownload(filename, base64Data);
+    switch (message.type) {
+      case 'DOWNLOAD':
+        const {filename, data: base64Data} = message;
+        handleDownload(filename, base64Data);
+        break;
+      case 'VERSION':
+        console.log('version', data);
+        showVersion();
+        break;
+      default:
+        break;
     }
   };
 
+  const loadStart = () => {
+    console.log('loadStart');
+    if (!wasLoaded.current) {
+      // setSysLoading(true);
+    }
+  };
+
+  const loadEnd = () => {
+    if (wasLoaded.current) {
+      setTimeout(() => {
+        console.log('loading页面隐藏');
+        wasLoaded.current = false;
+      }, 1000);
+    }
+  };
+
+  const handleWebviewLoaded = useCallback(() => {
+    console.log('页面开始加载', wasLoaded.current);
+    if (!wasLoaded.current) {
+      console.log('loading页面显示');
+      wasLoaded.current = true;
+    }
+  }, []);
+
+  const showVersion = () => {
+    setVersionIsShow(true);
+  };
+  const closeVersion = () => {
+    setVersionIsShow(false);
+  };
   return (
     <View style={styles.container}>
+      {wasLoaded.current && (
+        <Loading
+          text="精彩即将开启"
+          uri={require('./public/assets/logo_img.png')}
+        />
+      )}
+      {versionIsShow && (
+        <Version version="beta0.0.1" handleClose={closeVersion} />
+      )}
       <WebView
         source={{
           uri: `${
@@ -111,13 +162,12 @@ function App(): React.JSX.Element {
         scalesPageToFit={false}
         injectedJavaScript={INJECTEDJAVASCRIPT}
         onMessage={onMessage}
+        allowFileAccess={true}
+        allowFileAccessFromFileURLs={true}
+        // onLoadStart={loadStart}
+        onLoad={handleWebviewLoaded}
+        onLoadEnd={loadEnd}
       />
-      {/* <WebView
-        source={{
-          uri: `http://8.137.17.205/`,
-          originWhitelist: ['*'],
-        }}
-      /> */}
     </View>
   );
 }
@@ -128,12 +178,13 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: '#159acd',
     display: 'flex',
+    position: 'relative',
   },
-  webview: {
-    flex: 1,
-    width: 500,
-    height: 500,
-  },
+  // webview: {
+  //   flex: 1,
+  //   width: 500,
+  //   height: 500,
+  // },
 });
 
 export default App;
