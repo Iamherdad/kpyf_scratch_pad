@@ -41,6 +41,9 @@ function App(): React.JSX.Element {
     if (Platform.OS === 'android') {
       const {Server} = NativeModules;
       Server.createCalendarEvent((res: any) => console.log(res, 'res'));
+    } else {
+      const {LinkServer} = NativeModules;
+      LinkServer.createCalendarEvent('我是linkserver', '你是谁');
     }
   });
 
