@@ -15,7 +15,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 // `;
 const INJECTEDJAVASCRIPT = `
   const meta = document.createElement('meta'); 
-  meta.setAttribute('content', 'initial-scale=1, maximum-scale=0.8, user-scalable=0'); 
+  meta.setAttribute('content', 'initial-scale=1, maximum-scale=0.7, user-scalable=0'); 
   meta.setAttribute('name', 'viewport'); 
   document.getElementsByTagName('head')[0].appendChild(meta); 
 `;
@@ -38,8 +38,10 @@ function App(): React.JSX.Element {
   const wasLoaded = useRef(false);
   const [versionIsShow, setVersionIsShow] = useState(false);
   useEffect(() => {
-    const {Server} = NativeModules;
-    Server.createCalendarEvent((res: any) => console.log(res, 'res'));
+    if (Platform.OS === 'android') {
+      const {Server} = NativeModules;
+      Server.createCalendarEvent((res: any) => console.log(res, 'res'));
+    }
   });
 
   const requestStoragePermission = async () => {
@@ -73,20 +75,41 @@ function App(): React.JSX.Element {
 
     const base64Content = base64Data.split(';base64,').pop();
     if (base64Content) {
-      //判断目录是否存在如果不存在则创建
-      const dir = `${RNFS.ExternalStorageDirectoryPath}/a_kpaiedu/minifpv`;
-      try {
-        await RNFS.mkdir(dir);
-      } catch (error) {
-        console.error('创建目录失败，请检查是否开启文件访问权限');
-      }
-      const path = `${RNFS.ExternalStorageDirectoryPath}/a_kpaiedu/minifpv/${filename}`;
-      try {
-        await RNFS.writeFile(path, base64Content, 'base64');
-        console.log(`文件已保存到：/a_kpaiedu/minifpv/${filename}`);
-        Alert.alert(`文件已保存到：/a_kpaiedu/minifpv/${filename}`);
-      } catch (error) {
-        console.error('保存文件失败，请检查是否开启文件访问权限');
+      switch (Platform.OS) {
+        case 'android':
+          //判断目录是否存在如果不存在则创建
+          const dir = `${RNFS.ExternalStorageDirectoryPath}/a_kpaiedu/minifpv`;
+          try {
+            await RNFS.mkdir(dir);
+          } catch (error) {
+            console.error(error, 'error');
+            console.error('创建目录失败，请检查是否开启文件访问权限');
+          }
+          const path = `${RNFS.ExternalStorageDirectoryPath}/a_kpaiedu/minifpv/${filename}`;
+          try {
+            await RNFS.writeFile(path, base64Content, 'base64');
+            console.log(`文件已保存到：/a_kpaiedu/minifpv/${filename}`);
+            Alert.alert(`文件已保存到：/a_kpaiedu/minifpv/${filename}`);
+          } catch (error) {
+            console.error('保存文件失败，请检查是否开启文件访问权限');
+          }
+          break;
+        case 'ios':
+          const ios_path = `${RNFS.DocumentDirectoryPath}/${filename}`;
+          try {
+            await RNFS.writeFile(ios_path, base64Content, 'base64');
+            console.log(
+              `文件已保存到：${RNFS.DocumentDirectoryPath}/${filename}`,
+            );
+            Alert.alert(
+              `文件已保存到：${RNFS.DocumentDirectoryPath}/${filename}`,
+            );
+          } catch (error) {
+            console.error('保存文件失败，请检查是否开启文件访问权限');
+          }
+          break;
+        default:
+          break;
       }
     } else {
       console.error('无效的Base64数据');
@@ -151,13 +174,14 @@ function App(): React.JSX.Element {
       {versionIsShow && (
         <Version version="beta0.0.1" handleClose={closeVersion} />
       )}
+
       <WebView
         source={{
           uri: `${
             Platform.OS === 'android' ? 'file:///android_asset/' : ''
           }Web.bundle/index.html`,
-          originWhitelist: ['*'],
         }}
+        originWhitelist={['*']}
         javaScriptEnabled={true}
         scalesPageToFit={false}
         injectedJavaScript={INJECTEDJAVASCRIPT}
