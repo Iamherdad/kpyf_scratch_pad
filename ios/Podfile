@@ -23,6 +23,10 @@ target 'kpyf_scratch_pad' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+
+ # 添加 CocoaAsyncSocket
+  pod 'CocoaAsyncSocket'
+
   target 'kpyf_scratch_padTests' do
     inherit! :complete
     # Pods for testing

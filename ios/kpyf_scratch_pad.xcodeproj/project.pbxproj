@@ -13,9 +13,10 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-kpyf_scratch_pad-kpyf_scratch_padTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-kpyf_scratch_pad-kpyf_scratch_padTests.a */; };
-		8106EE182C1A891100CF7EE0 /* Web.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8106EE172C1A891100CF7EE0 /* Web.bundle */; };
 		8106EE232C1AC83300CF7EE0 /* RCTLinkServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8106EE222C1AC83300CF7EE0 /* RCTLinkServer.m */; };
 		8106EE242C1AC83300CF7EE0 /* RCTLinkServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8106EE222C1AC83300CF7EE0 /* RCTLinkServer.m */; };
+		8106EE262C1BDDBE00CF7EE0 /* Web.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8106EE252C1BDDBE00CF7EE0 /* Web.bundle */; };
+		8106EE272C1BDDBE00CF7EE0 /* Web.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8106EE252C1BDDBE00CF7EE0 /* Web.bundle */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		D21D21AA1D99E449C4F80E9E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 986D8B031AE8DA50F5C23187 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
@@ -46,9 +47,9 @@
 		5709B34CF0A7D63546082F79 /* Pods-kpyf_scratch_pad.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kpyf_scratch_pad.release.xcconfig"; path = "Target Support Files/Pods-kpyf_scratch_pad/Pods-kpyf_scratch_pad.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-kpyf_scratch_pad-kpyf_scratch_padTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kpyf_scratch_pad-kpyf_scratch_padTests.debug.xcconfig"; path = "Target Support Files/Pods-kpyf_scratch_pad-kpyf_scratch_padTests/Pods-kpyf_scratch_pad-kpyf_scratch_padTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-kpyf_scratch_pad.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-kpyf_scratch_pad.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		8106EE172C1A891100CF7EE0 /* Web.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Web.bundle; path = ../public/Web.bundle; sourceTree = "<group>"; };
 		8106EE212C1AC81A00CF7EE0 /* RCTLinkServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTLinkServer.h; sourceTree = "<group>"; };
 		8106EE222C1AC83300CF7EE0 /* RCTLinkServer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTLinkServer.m; sourceTree = "<group>"; };
+		8106EE252C1BDDBE00CF7EE0 /* Web.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Web.bundle; path = ../public/Web.bundle; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = kpyf_scratch_pad/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-kpyf_scratch_pad-kpyf_scratch_padTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kpyf_scratch_pad-kpyf_scratch_padTests.release.xcconfig"; path = "Target Support Files/Pods-kpyf_scratch_pad-kpyf_scratch_padTests/Pods-kpyf_scratch_pad-kpyf_scratch_padTests.release.xcconfig"; sourceTree = "<group>"; };
 		986D8B031AE8DA50F5C23187 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = kpyf_scratch_pad/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -95,7 +96,7 @@
 		13B07FAE1A68108700A75B9A /* kpyf_scratch_pad */ = {
 			isa = PBXGroup;
 			children = (
-				8106EE172C1A891100CF7EE0 /* Web.bundle */,
+				8106EE252C1BDDBE00CF7EE0 /* Web.bundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -248,6 +249,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8106EE272C1BDDBE00CF7EE0 /* Web.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,7 +257,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8106EE182C1A891100CF7EE0 /* Web.bundle in Resources */,
+				8106EE262C1BDDBE00CF7EE0 /* Web.bundle in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				D21D21AA1D99E449C4F80E9E /* PrivacyInfo.xcprivacy in Resources */,
@@ -612,7 +614,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -684,7 +689,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;

@@ -15,7 +15,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 // `;
 const INJECTEDJAVASCRIPT = `
   const meta = document.createElement('meta'); 
-  meta.setAttribute('content', 'initial-scale=1, maximum-scale=0.7, user-scalable=0'); 
+  meta.setAttribute('content', 'initial-scale=1, maximum-scale=0.5, user-scalable=0'); 
   meta.setAttribute('name', 'viewport'); 
   document.getElementsByTagName('head')[0].appendChild(meta); 
 `;
@@ -34,16 +34,27 @@ import WebView, {WebViewMessageEvent} from 'react-native-webview';
 import RNFS from 'react-native-fs';
 import Loading from './components/Loading';
 import Version from './components/Version';
+import {Buffer} from 'buffer';
 function App(): React.JSX.Element {
   const wasLoaded = useRef(false);
   const [versionIsShow, setVersionIsShow] = useState(false);
+  const dataBuffer = useRef([
+    0x66, 0x14, 0x80, 0x80, 0x80, 0x80, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x99,
+  ]);
   useEffect(() => {
     if (Platform.OS === 'android') {
       const {Server} = NativeModules;
       Server.createCalendarEvent((res: any) => console.log(res, 'res'));
     } else {
       const {LinkServer} = NativeModules;
-      LinkServer.createCalendarEvent('我是linkserver', '你是谁');
+      setInterval(() => {
+        console.log('RN发送数据', dataBuffer.current);
+        // 真机接收不到数组，将数组转换为Base64编码的字符串发送
+        const base64Data = Buffer.from(dataBuffer.current).toString('base64');
+        console.log('base64Datak paikpai', base64Data);
+        LinkServer.sendUDPMessage(base64Data, '172.16.10.1', 9090);
+      }, 50);
     }
   });
 
@@ -131,15 +142,24 @@ function App(): React.JSX.Element {
         console.log('version', data);
         showVersion();
         break;
+      case 'UAV_CTROLLER':
+        const {LinkServer} = NativeModules;
+        console.log(message.data, 'message');
+        const newdata = [
+          0x66, 0x14, 0x80, 0x80, 0x80, 0x80, 0x01, 0x02, 0x00, 0x00, 0x00,
+          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x99,
+        ];
+        const defaultData = [
+          0x66, 0x14, 0x80, 0x80, 0x80, 0x80, 0x00, 0x02, 0x00, 0x00, 0x00,
+          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x99,
+        ];
+        dataBuffer.current = newdata;
+        setTimeout(() => {
+          dataBuffer.current = defaultData;
+        }, 1000);
+        break;
       default:
         break;
-    }
-  };
-
-  const loadStart = () => {
-    console.log('loadStart');
-    if (!wasLoaded.current) {
-      // setSysLoading(true);
     }
   };
 
