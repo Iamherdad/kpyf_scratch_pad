@@ -34,27 +34,21 @@ import WebView, {WebViewMessageEvent} from 'react-native-webview';
 import RNFS from 'react-native-fs';
 import Loading from './components/Loading';
 import Version from './components/Version';
-import {Buffer} from 'buffer';
+import LinkServer from './utils/linkServer';
+import MiniFPV from './utils/miniFPV';
 function App(): React.JSX.Element {
   const wasLoaded = useRef(false);
   const [versionIsShow, setVersionIsShow] = useState(false);
-  const dataBuffer = useRef([
-    0x66, 0x14, 0x80, 0x80, 0x80, 0x80, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x99,
-  ]);
+  const linkServerRef = useRef<LinkServer | null>(null);
   useEffect(() => {
     if (Platform.OS === 'android') {
       const {Server} = NativeModules;
       Server.createCalendarEvent((res: any) => console.log(res, 'res'));
     } else {
-      const {LinkServer} = NativeModules;
-      setInterval(() => {
-        console.log('RN发送数据', dataBuffer.current);
-        // 真机接收不到数组，将数组转换为Base64编码的字符串发送
-        const base64Data = Buffer.from(dataBuffer.current).toString('base64');
-        console.log('base64Datak paikpai', base64Data);
-        LinkServer.sendUDPMessage(base64Data, '172.16.10.1', 9090);
-      }, 50);
+      const extentions = [
+        {Class: MiniFPV, extention_id: 'minifpv', args: ['172.16.10.1', 9090]},
+      ];
+      linkServerRef.current = new LinkServer(extentions);
     }
   });
 
@@ -143,20 +137,8 @@ function App(): React.JSX.Element {
         showVersion();
         break;
       case 'UAV_CTROLLER':
-        const {LinkServer} = NativeModules;
         console.log(message.data, 'message');
-        const newdata = [
-          0x66, 0x14, 0x80, 0x80, 0x80, 0x80, 0x01, 0x02, 0x00, 0x00, 0x00,
-          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x99,
-        ];
-        const defaultData = [
-          0x66, 0x14, 0x80, 0x80, 0x80, 0x80, 0x00, 0x02, 0x00, 0x00, 0x00,
-          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x99,
-        ];
-        dataBuffer.current = newdata;
-        setTimeout(() => {
-          dataBuffer.current = defaultData;
-        }, 1000);
+        linkServerRef.current?.onMessage(JSON.parse(message.data));
         break;
       default:
         break;
