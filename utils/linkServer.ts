@@ -1,11 +1,11 @@
 interface content {
   cmd: string;
-  arg?: number | string;
-  arg1?: number | string;
-  arg2: number | string;
-  arg3?: number | string;
-  arg4?: number | string;
-  arg5?: number | string;
+  arg?: string;
+  arg1?: string;
+  arg2: string;
+  arg3?: string;
+  arg4?: string;
+  arg5?: string;
 }
 
 interface Message {

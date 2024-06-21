@@ -29,6 +29,8 @@ import {
   Platform,
   Alert,
   PermissionsAndroid,
+  Linking,
+  SafeAreaView,
 } from 'react-native';
 import WebView, {WebViewMessageEvent} from 'react-native-webview';
 import RNFS from 'react-native-fs';
@@ -101,6 +103,7 @@ function App(): React.JSX.Element {
           } catch (error) {
             console.error('保存文件失败，请检查是否开启文件访问权限');
           }
+
           break;
         case 'ios':
           const ios_path = `${RNFS.DocumentDirectoryPath}/${filename}`;
@@ -169,7 +172,7 @@ function App(): React.JSX.Element {
     setVersionIsShow(false);
   };
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {wasLoaded.current && (
         <Loading
           text="精彩即将开启"
@@ -186,6 +189,7 @@ function App(): React.JSX.Element {
             Platform.OS === 'android' ? 'file:///android_asset/' : ''
           }Web.bundle/index.html`,
         }}
+        platform={Platform.OS === 'ios' ? 'ios' : 'android'}
         originWhitelist={['*']}
         javaScriptEnabled={true}
         scalesPageToFit={false}
@@ -197,7 +201,7 @@ function App(): React.JSX.Element {
         onLoad={handleWebviewLoaded}
         onLoadEnd={loadEnd}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -205,9 +209,12 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#159acd',
+    // backgroundColor: '#159acd',
+    backgroundColor: '#f9f9f9',
+
     display: 'flex',
     position: 'relative',
+    flex: 1,
   },
   // webview: {
   //   flex: 1,
