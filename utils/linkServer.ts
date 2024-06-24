@@ -6,6 +6,11 @@ interface content {
   arg3?: string;
   arg4?: string;
   arg5?: string;
+  acc?: string;
+  roll?: string;
+  pitch?: string;
+  yaw?: string;
+  delay?: string;
 }
 
 interface Message {

@@ -1,6 +1,5 @@
-import {LinkServer} from './nativeModules';
+import {Udp} from './nativeModules';
 import type {content, Message} from './linkServer';
-import {Buffer} from 'buffer';
 import {clamp, asyncSleep, xor8} from './utils';
 const MINIFPV_FLYCTRL_CENTER = 0x80;
 const MINIFPV_FLYCTRL_RANGE = 0x60;
@@ -30,7 +29,7 @@ interface IFlightControls {
 }
 
 class MiniFPV implements IFlightControls {
-  linkServer: any;
+  udp_session: any;
   private host: string;
   private port: number;
   private HEAD: number[] = [0x66, 0x14];
@@ -45,7 +44,7 @@ class MiniFPV implements IFlightControls {
   ctrl: number = 0x00;
 
   constructor(host: string, port: number) {
-    this.linkServer = LinkServer;
+    this.udp_session = Udp;
     this.host = host;
     this.port = port;
     this.init();
@@ -67,10 +66,16 @@ class MiniFPV implements IFlightControls {
       ck,
       ...this.END,
     ];
+
     //console.log(data.map(byte => byte.toString(16)));
-    const base64Data = Buffer.from(data).toString('base64');
+    // console.log(
+    //   'minifpv发送消息',
+    //   data.map(byte => byte.toString(16)),
+    // );
+    // const base64Data = Buffer.from(data).toString('base64');
+    // console.log('minifpv发送消息', data);
     try {
-      this.linkServer.sendUDPMessage(base64Data, this.host, this.port);
+      this.udp_session.sendUDPMessage(data, this.host, this.port);
     } catch (err) {
       console.error('UDP SEND MESSAGE ERROR', err);
     }
@@ -100,7 +105,7 @@ class MiniFPV implements IFlightControls {
   }
 
   async notify(content: content) {
-    const {cmd, arg, arg1, arg2, arg3} = content;
+    const {cmd, arg, arg1, roll, pitch, yaw, acc, delay} = content;
     console.log('minifpv收到消息', content);
     switch (cmd) {
       case Command.terminate:
@@ -140,7 +145,7 @@ class MiniFPV implements IFlightControls {
         await this.rollCtrl(arg);
         break;
       case Command.movetoxyz:
-        // await this.movetoxyz(arg, arg1, arg2, arg3, arg4);
+        await this.movetoxyz(roll, pitch, acc, yaw, delay);
         break;
       default:
         break;
@@ -270,7 +275,35 @@ class MiniFPV implements IFlightControls {
     }
   }
 
-  async movetoxyz(roll: any, pitch: any, acc: any, yaw: any, delay: any) {}
+  async movetoxyz(roll: any, pitch: any, acc: any, yaw: any, delay: any) {
+    console.log('===>');
+    console.log(roll, pitch, acc, yaw, delay);
+    const _roll = isNaN(parseInt(roll, 16)) ? 0 : parseInt(roll);
+    const _pitch = isNaN(parseInt(pitch)) ? 0 : parseInt(pitch);
+    const _acc = isNaN(parseInt(acc)) ? 0 : parseInt(acc);
+    const _yaw = isNaN(parseInt(yaw)) ? 0 : parseInt(yaw);
+    const _delay = isNaN(parseInt(delay)) ? 0 : parseInt(delay);
+
+    this.setRoll(
+      MINIFPV_FLYCTRL_CENTER +
+        parseInt(String((MINIFPV_FLYCTRL_RANGE * _roll) / 100)),
+    );
+
+    this.setPitch(
+      MINIFPV_FLYCTRL_CENTER +
+        parseInt(String((MINIFPV_FLYCTRL_RANGE * _pitch) / 100)),
+    );
+    this.setAcc(
+      MINIFPV_FLYCTRL_CENTER +
+        parseInt(String((MINIFPV_FLYCTRL_RANGE * _acc) / 100)),
+    );
+    this.setYaw(
+      MINIFPV_FLYCTRL_CENTER +
+        parseInt(String((MINIFPV_FLYCTRL_RANGE * _yaw) / 100)),
+    );
+    await asyncSleep(_delay * 1000);
+    this.reset();
+  }
 }
 
 export default MiniFPV;

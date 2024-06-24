@@ -43,17 +43,28 @@ function App(): React.JSX.Element {
   const [versionIsShow, setVersionIsShow] = useState(false);
   const linkServerRef = useRef<LinkServer | null>(null);
   useEffect(() => {
-    if (Platform.OS === 'android') {
-      const {Server} = NativeModules;
-      Server.createCalendarEvent((res: any) => console.log(res, 'res'));
-    } else {
-      const extentions = [
-        {Class: MiniFPV, extention_id: 'minifpv', args: ['172.16.10.1', 9090]},
-      ];
-      linkServerRef.current = new LinkServer(extentions);
-    }
-  });
+    const extentions = [
+      {Class: MiniFPV, extention_id: 'minifpv', args: ['172.16.10.1', 9090]},
+    ];
+    linkServerRef.current = new LinkServer(extentions);
+    // if (Platform.OS === 'android') {
+    //   const {Server, Udp} = NativeModules;
+    //   const dataArray = [
+    //     102, 20, 128, 126, 128, 128, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 153,
+    //   ];
 
+    //   setInterval(() => {
+    //     Udp.sendUDPMessage(dataArray, '172.16.10.1', 9090);
+    //   }, 50);
+    //   // Server.createCalendarEvent((res: any) => console.log(res, 'res'));
+    // } else {
+    //   const extentions = [
+    //     {Class: MiniFPV, extention_id: 'minifpv', args: ['172.16.10.1', 9090]},
+    //   ];
+    //   linkServerRef.current = new LinkServer(extentions);
+    // }
+  });
+  //请求存储权限
   const requestStoragePermission = async () => {
     if (Platform.OS === 'android') {
       try {
@@ -76,6 +87,7 @@ function App(): React.JSX.Element {
     return true;
   };
 
+  //下载文件
   const handleDownload = async (filename: string, base64Data: string) => {
     const hasPermission = await requestStoragePermission();
     if (!hasPermission) {
@@ -127,6 +139,7 @@ function App(): React.JSX.Element {
     }
   };
 
+  //webview消息处理
   const onMessage = (event: WebViewMessageEvent) => {
     const {data} = event.nativeEvent;
     const message = JSON.parse(data);

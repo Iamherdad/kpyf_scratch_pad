@@ -1,5 +1,5 @@
 import {NativeModules} from 'react-native';
 
-const {LinkServer} = NativeModules;
+const {LinkServer, Udp} = NativeModules;
 
-export {LinkServer};
+export {LinkServer, Udp};
