@@ -276,9 +276,7 @@ class MiniFPV implements IFlightControls {
   }
 
   async movetoxyz(roll: any, pitch: any, acc: any, yaw: any, delay: any) {
-    console.log('===>');
-    console.log(roll, pitch, acc, yaw, delay);
-    const _roll = isNaN(parseInt(roll, 16)) ? 0 : parseInt(roll);
+    const _roll = isNaN(parseInt(roll)) ? 0 : parseInt(roll);
     const _pitch = isNaN(parseInt(pitch)) ? 0 : parseInt(pitch);
     const _acc = isNaN(parseInt(acc)) ? 0 : parseInt(acc);
     const _yaw = isNaN(parseInt(yaw)) ? 0 : parseInt(yaw);
