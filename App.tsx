@@ -46,7 +46,11 @@ function App(): React.JSX.Element {
     const extentions = [
       {Class: MiniFPV, extention_id: 'minifpv', args: ['172.16.10.1', 9090]},
     ];
-    linkServerRef.current = new LinkServer(extentions);
+    if (!linkServerRef.current) {
+      linkServerRef.current = new LinkServer(extentions);
+    }
+    // linkServerRef.current = new LinkServer(extentions);
+
     // if (Platform.OS === 'android') {
     //   const {Server, Udp} = NativeModules;
     //   const dataArray = [
