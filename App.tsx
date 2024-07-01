@@ -6,20 +6,6 @@
  */
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-
-// const INJECTEDJAVASCRIPT = `
-//   const meta = document.createElement('meta');
-//   meta.setAttribute('content', 'initial-scale=1, maximum-scale=0.5, user-scalable=0');
-//   meta.setAttribute('name', 'viewport');
-//   document.getElementsByTagName('head')[0].appendChild(meta);
-// `;
-const INJECTEDJAVASCRIPT = `
-  const meta = document.createElement('meta'); 
-  meta.setAttribute('content', 'initial-scale=1, maximum-scale=0.5, user-scalable=0'); 
-  meta.setAttribute('name', 'viewport'); 
-  document.getElementsByTagName('head')[0].appendChild(meta); 
-`;
-
 import {
   StyleSheet,
   Text,
@@ -35,12 +21,29 @@ import {
 import WebView, {WebViewMessageEvent} from 'react-native-webview';
 import RNFS from 'react-native-fs';
 import Loading from './components/Loading';
-import Version from './components/Version';
+// import Version from './components/Version';
 import LinkServer from './utils/linkServer';
 import MiniFPV from './utils/miniFPV';
+
+// const INJECTEDJAVASCRIPT = `
+//   const meta = document.createElement('meta');
+//   meta.setAttribute('content', 'initial-scale=1, maximum-scale=0.5, user-scalable=0');
+//   meta.setAttribute('name', 'viewport');
+//   document.getElementsByTagName('head')[0].appendChild(meta);
+// `;
+
+const INJECTEDJAVASCRIPT = `
+  const version = 'beta0.0.1';
+  window.RNVersion = version;
+  const meta = document.createElement('meta'); 
+  meta.setAttribute('content', 'initial-scale=1, maximum-scale=0.5, user-scalable=0'); 
+  meta.setAttribute('name', 'viewport'); 
+  document.getElementsByTagName('head')[0].appendChild(meta); 
+`;
+
 function App(): React.JSX.Element {
   const wasLoaded = useRef(false);
-  const [versionIsShow, setVersionIsShow] = useState(false);
+  // const [versionIsShow, setVersionIsShow] = useState(false);
   const linkServerRef = useRef<LinkServer | null>(null);
   useEffect(() => {
     const extentions = [
@@ -50,23 +53,6 @@ function App(): React.JSX.Element {
       linkServerRef.current = new LinkServer(extentions);
     }
     // linkServerRef.current = new LinkServer(extentions);
-
-    // if (Platform.OS === 'android') {
-    //   const {Server, Udp} = NativeModules;
-    //   const dataArray = [
-    //     102, 20, 128, 126, 128, 128, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 153,
-    //   ];
-
-    //   setInterval(() => {
-    //     Udp.sendUDPMessage(dataArray, '172.16.10.1', 9090);
-    //   }, 50);
-    //   // Server.createCalendarEvent((res: any) => console.log(res, 'res'));
-    // } else {
-    //   const extentions = [
-    //     {Class: MiniFPV, extention_id: 'minifpv', args: ['172.16.10.1', 9090]},
-    //   ];
-    //   linkServerRef.current = new LinkServer(extentions);
-    // }
   });
   //请求存储权限
   const requestStoragePermission = async () => {
@@ -154,7 +140,7 @@ function App(): React.JSX.Element {
         break;
       case 'VERSION':
         console.log('version', data);
-        showVersion();
+        // showVersion();
         break;
       case 'UAV_CTROLLER':
         console.log(message.data, 'message');
@@ -182,12 +168,12 @@ function App(): React.JSX.Element {
     }
   }, []);
 
-  const showVersion = () => {
-    setVersionIsShow(true);
-  };
-  const closeVersion = () => {
-    setVersionIsShow(false);
-  };
+  // const showVersion = () => {
+  //   setVersionIsShow(true);
+  // };
+  // const closeVersion = () => {
+  //   setVersionIsShow(false);
+  // };
   return (
     <SafeAreaView style={styles.container}>
       {wasLoaded.current && (
@@ -196,9 +182,9 @@ function App(): React.JSX.Element {
           uri={require('./public/assets/logo_img.png')}
         />
       )}
-      {versionIsShow && (
+      {/* {versionIsShow && (
         <Version version="beta0.0.1" handleClose={closeVersion} />
-      )}
+      )} */}
 
       <WebView
         source={{
@@ -206,7 +192,6 @@ function App(): React.JSX.Element {
             Platform.OS === 'android' ? 'file:///android_asset/' : ''
           }Web.bundle/index.html`,
         }}
-        platform={Platform.OS === 'ios' ? 'ios' : 'android'}
         originWhitelist={['*']}
         javaScriptEnabled={true}
         scalesPageToFit={false}
